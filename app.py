@@ -113,6 +113,9 @@ class ItemList(MethodView):
         #
         #   Test: {"name": "Ghost", "price": 5, "store_id": 999}
         #         should return 404
+
+        if not store_exists(item_data["store_id"]):
+            abort(404, message="Store not found.")
         # --------------------------------------------------
 
         # --------------------------------------------------
@@ -129,6 +132,9 @@ class ItemList(MethodView):
         #         create "Laptop" in store 1 again → 409
         #   Test: Create "Laptop" in store 1, then
         #         create "Laptop" in store 2 → 201 (OK)
+
+        if duplicate_name_in_store(item_data["name"], item_data["store_id"]):
+            abort(409, message="An item with this name already exists in this store.")
         # --------------------------------------------------
 
         new_item = {
